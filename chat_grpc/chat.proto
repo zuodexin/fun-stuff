@@ -1,0 +1,16 @@
+
+syntax = "proto3";
+
+option go_package = ".;main";
+
+
+message ChatInfo{
+    string content=1;
+}
+
+service Chat{
+    rpc ServerStreamingChat(ChatInfo) returns (stream ChatInfo){}
+    rpc ClientStreamingChat(stream ChatInfo) returns (ChatInfo){}
+    rpc BidirectionalStreamingChat(stream ChatInfo) returns(stream ChatInfo){}
+}
+
