@@ -82,18 +82,20 @@ var file_chat_proto_rawDesc = []byte{
 	0x0a, 0x0a, 0x63, 0x68, 0x61, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x24, 0x0a, 0x08,
 	0x43, 0x68, 0x61, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74,
 	0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65,
-	0x6e, 0x74, 0x32, 0xa2, 0x01, 0x0a, 0x04, 0x43, 0x68, 0x61, 0x74, 0x12, 0x2f, 0x0a, 0x13, 0x53,
+	0x6e, 0x74, 0x32, 0xc1, 0x01, 0x0a, 0x04, 0x43, 0x68, 0x61, 0x74, 0x12, 0x2f, 0x0a, 0x13, 0x53,
 	0x65, 0x72, 0x76, 0x65, 0x72, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x69, 0x6e, 0x67, 0x43, 0x68,
 	0x61, 0x74, 0x12, 0x09, 0x2e, 0x43, 0x68, 0x61, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x1a, 0x09, 0x2e,
 	0x43, 0x68, 0x61, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x00, 0x30, 0x01, 0x12, 0x2f, 0x0a, 0x13,
 	0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x69, 0x6e, 0x67, 0x43,
 	0x68, 0x61, 0x74, 0x12, 0x09, 0x2e, 0x43, 0x68, 0x61, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x1a, 0x09,
-	0x2e, 0x43, 0x68, 0x61, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x00, 0x28, 0x01, 0x12, 0x38, 0x0a,
-	0x1a, 0x42, 0x69, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x61, 0x6c, 0x53, 0x74,
-	0x72, 0x65, 0x61, 0x6d, 0x69, 0x6e, 0x67, 0x43, 0x68, 0x61, 0x74, 0x12, 0x09, 0x2e, 0x43, 0x68,
-	0x61, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x1a, 0x09, 0x2e, 0x43, 0x68, 0x61, 0x74, 0x49, 0x6e, 0x66,
-	0x6f, 0x22, 0x00, 0x28, 0x01, 0x30, 0x01, 0x42, 0x08, 0x5a, 0x06, 0x2e, 0x3b, 0x6d, 0x61, 0x69,
-	0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x2e, 0x43, 0x68, 0x61, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x00, 0x28, 0x01, 0x12, 0x2e, 0x0a,
+	0x10, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x43, 0x68, 0x61,
+	0x74, 0x12, 0x09, 0x2e, 0x43, 0x68, 0x61, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x1a, 0x09, 0x2e, 0x43,
+	0x68, 0x61, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x00, 0x28, 0x01, 0x30, 0x01, 0x12, 0x27, 0x0a,
+	0x09, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x43, 0x68, 0x61, 0x74, 0x12, 0x09, 0x2e, 0x43, 0x68, 0x61,
+	0x74, 0x49, 0x6e, 0x66, 0x6f, 0x1a, 0x09, 0x2e, 0x43, 0x68, 0x61, 0x74, 0x49, 0x6e, 0x66, 0x6f,
+	0x22, 0x00, 0x28, 0x01, 0x30, 0x01, 0x42, 0x08, 0x5a, 0x06, 0x2e, 0x3b, 0x6d, 0x61, 0x69, 0x6e,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -115,12 +117,14 @@ var file_chat_proto_goTypes = []interface{}{
 var file_chat_proto_depIdxs = []int32{
 	0, // 0: Chat.ServerStreamingChat:input_type -> ChatInfo
 	0, // 1: Chat.ClientStreamingChat:input_type -> ChatInfo
-	0, // 2: Chat.BidirectionalStreamingChat:input_type -> ChatInfo
-	0, // 3: Chat.ServerStreamingChat:output_type -> ChatInfo
-	0, // 4: Chat.ClientStreamingChat:output_type -> ChatInfo
-	0, // 5: Chat.BidirectionalStreamingChat:output_type -> ChatInfo
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	0, // 2: Chat.ClientServerChat:input_type -> ChatInfo
+	0, // 3: Chat.GroupChat:input_type -> ChatInfo
+	0, // 4: Chat.ServerStreamingChat:output_type -> ChatInfo
+	0, // 5: Chat.ClientStreamingChat:output_type -> ChatInfo
+	0, // 6: Chat.ClientServerChat:output_type -> ChatInfo
+	0, // 7: Chat.GroupChat:output_type -> ChatInfo
+	4, // [4:8] is the sub-list for method output_type
+	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -179,7 +183,8 @@ const _ = grpc.SupportPackageIsVersion6
 type ChatClient interface {
 	ServerStreamingChat(ctx context.Context, in *ChatInfo, opts ...grpc.CallOption) (Chat_ServerStreamingChatClient, error)
 	ClientStreamingChat(ctx context.Context, opts ...grpc.CallOption) (Chat_ClientStreamingChatClient, error)
-	BidirectionalStreamingChat(ctx context.Context, opts ...grpc.CallOption) (Chat_BidirectionalStreamingChatClient, error)
+	ClientServerChat(ctx context.Context, opts ...grpc.CallOption) (Chat_ClientServerChatClient, error)
+	GroupChat(ctx context.Context, opts ...grpc.CallOption) (Chat_GroupChatClient, error)
 }
 
 type chatClient struct {
@@ -256,30 +261,61 @@ func (x *chatClientStreamingChatClient) CloseAndRecv() (*ChatInfo, error) {
 	return m, nil
 }
 
-func (c *chatClient) BidirectionalStreamingChat(ctx context.Context, opts ...grpc.CallOption) (Chat_BidirectionalStreamingChatClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Chat_serviceDesc.Streams[2], "/Chat/BidirectionalStreamingChat", opts...)
+func (c *chatClient) ClientServerChat(ctx context.Context, opts ...grpc.CallOption) (Chat_ClientServerChatClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Chat_serviceDesc.Streams[2], "/Chat/ClientServerChat", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &chatBidirectionalStreamingChatClient{stream}
+	x := &chatClientServerChatClient{stream}
 	return x, nil
 }
 
-type Chat_BidirectionalStreamingChatClient interface {
+type Chat_ClientServerChatClient interface {
 	Send(*ChatInfo) error
 	Recv() (*ChatInfo, error)
 	grpc.ClientStream
 }
 
-type chatBidirectionalStreamingChatClient struct {
+type chatClientServerChatClient struct {
 	grpc.ClientStream
 }
 
-func (x *chatBidirectionalStreamingChatClient) Send(m *ChatInfo) error {
+func (x *chatClientServerChatClient) Send(m *ChatInfo) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *chatBidirectionalStreamingChatClient) Recv() (*ChatInfo, error) {
+func (x *chatClientServerChatClient) Recv() (*ChatInfo, error) {
+	m := new(ChatInfo)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *chatClient) GroupChat(ctx context.Context, opts ...grpc.CallOption) (Chat_GroupChatClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Chat_serviceDesc.Streams[3], "/Chat/GroupChat", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &chatGroupChatClient{stream}
+	return x, nil
+}
+
+type Chat_GroupChatClient interface {
+	Send(*ChatInfo) error
+	Recv() (*ChatInfo, error)
+	grpc.ClientStream
+}
+
+type chatGroupChatClient struct {
+	grpc.ClientStream
+}
+
+func (x *chatGroupChatClient) Send(m *ChatInfo) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *chatGroupChatClient) Recv() (*ChatInfo, error) {
 	m := new(ChatInfo)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -291,7 +327,8 @@ func (x *chatBidirectionalStreamingChatClient) Recv() (*ChatInfo, error) {
 type ChatServer interface {
 	ServerStreamingChat(*ChatInfo, Chat_ServerStreamingChatServer) error
 	ClientStreamingChat(Chat_ClientStreamingChatServer) error
-	BidirectionalStreamingChat(Chat_BidirectionalStreamingChatServer) error
+	ClientServerChat(Chat_ClientServerChatServer) error
+	GroupChat(Chat_GroupChatServer) error
 }
 
 // UnimplementedChatServer can be embedded to have forward compatible implementations.
@@ -304,8 +341,11 @@ func (*UnimplementedChatServer) ServerStreamingChat(*ChatInfo, Chat_ServerStream
 func (*UnimplementedChatServer) ClientStreamingChat(Chat_ClientStreamingChatServer) error {
 	return status.Errorf(codes.Unimplemented, "method ClientStreamingChat not implemented")
 }
-func (*UnimplementedChatServer) BidirectionalStreamingChat(Chat_BidirectionalStreamingChatServer) error {
-	return status.Errorf(codes.Unimplemented, "method BidirectionalStreamingChat not implemented")
+func (*UnimplementedChatServer) ClientServerChat(Chat_ClientServerChatServer) error {
+	return status.Errorf(codes.Unimplemented, "method ClientServerChat not implemented")
+}
+func (*UnimplementedChatServer) GroupChat(Chat_GroupChatServer) error {
+	return status.Errorf(codes.Unimplemented, "method GroupChat not implemented")
 }
 
 func RegisterChatServer(s *grpc.Server, srv ChatServer) {
@@ -359,25 +399,51 @@ func (x *chatClientStreamingChatServer) Recv() (*ChatInfo, error) {
 	return m, nil
 }
 
-func _Chat_BidirectionalStreamingChat_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ChatServer).BidirectionalStreamingChat(&chatBidirectionalStreamingChatServer{stream})
+func _Chat_ClientServerChat_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ChatServer).ClientServerChat(&chatClientServerChatServer{stream})
 }
 
-type Chat_BidirectionalStreamingChatServer interface {
+type Chat_ClientServerChatServer interface {
 	Send(*ChatInfo) error
 	Recv() (*ChatInfo, error)
 	grpc.ServerStream
 }
 
-type chatBidirectionalStreamingChatServer struct {
+type chatClientServerChatServer struct {
 	grpc.ServerStream
 }
 
-func (x *chatBidirectionalStreamingChatServer) Send(m *ChatInfo) error {
+func (x *chatClientServerChatServer) Send(m *ChatInfo) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *chatBidirectionalStreamingChatServer) Recv() (*ChatInfo, error) {
+func (x *chatClientServerChatServer) Recv() (*ChatInfo, error) {
+	m := new(ChatInfo)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _Chat_GroupChat_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ChatServer).GroupChat(&chatGroupChatServer{stream})
+}
+
+type Chat_GroupChatServer interface {
+	Send(*ChatInfo) error
+	Recv() (*ChatInfo, error)
+	grpc.ServerStream
+}
+
+type chatGroupChatServer struct {
+	grpc.ServerStream
+}
+
+func (x *chatGroupChatServer) Send(m *ChatInfo) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *chatGroupChatServer) Recv() (*ChatInfo, error) {
 	m := new(ChatInfo)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -401,8 +467,14 @@ var _Chat_serviceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 		{
-			StreamName:    "BidirectionalStreamingChat",
-			Handler:       _Chat_BidirectionalStreamingChat_Handler,
+			StreamName:    "ClientServerChat",
+			Handler:       _Chat_ClientServerChat_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "GroupChat",
+			Handler:       _Chat_GroupChat_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},

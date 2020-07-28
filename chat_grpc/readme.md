@@ -26,12 +26,12 @@ go build client.go chat.pb.go
 go build server.go chat.pb.go
 ```
 
-## 运行server
+## 运行server(群聊使用 --chat_type=group 客户端服务器使用--chat_type=cs)
 ```
-./sever
+./sever --chat_type=group
 ```
 
-## 运行client
+## 运行client(群聊使用 --chat_type=group 客户端服务器使用--chat_type=cs)
 ```
-./client
+./client --chat_type=group
 ```

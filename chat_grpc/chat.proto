@@ -11,6 +11,7 @@ message ChatInfo{
 service Chat{
     rpc ServerStreamingChat(ChatInfo) returns (stream ChatInfo){}
     rpc ClientStreamingChat(stream ChatInfo) returns (ChatInfo){}
-    rpc BidirectionalStreamingChat(stream ChatInfo) returns(stream ChatInfo){}
+    rpc ClientServerChat(stream ChatInfo) returns(stream ChatInfo){}
+    rpc GroupChat(stream ChatInfo) returns(stream ChatInfo){}
 }
 
