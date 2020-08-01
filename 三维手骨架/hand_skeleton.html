@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人手骨架模型</title>
+    <script src="./three.js/build/three.min.js"></script>
+    <script>
+         
+    </script>
+    <script type="module">
+        import { OrbitControls } from './three.js/examples/jsm/controls/OrbitControls.js';
+        var camera, scene, renderer,controls,hand_mesh;
+        var clock = new THREE.Clock();
+        var Hand = function(joints){
+            var j = joints;
+            var active = 0;
+            var id_map = {};
+            var grp_map = {};
+            return {
+                getJoints:function(){
+                    return j;
+                },
+                setActivate:function(id){
+                    active = id;
+                },
+                getActivate:function(id){
+                    return active;
+                },
+                getIdMap:function(){
+                    return id_map;
+                },
+                getGrpMap:function(){
+                    return grp_map;
+                }
+            }
+        }
+        Hand.prototype.connections = [ 
+                    [0,1],[1,6],[6,7],[7,8],//thumb
+                    [0,2],[2,9],[9,10],[10,11], //index
+                    [0,3],[3,12],[12,13],[13,14], //middel
+                    [0,4],[4,15],[15,16],[16,17], //ring
+                    [0,5],[5,18],[18,19],[19,20]];//pinky,
+        Hand.prototype.structure = connection_to_tree(Hand.prototype.connections);
+        console.log('hand structure:',Hand.prototype.structure);
+        Hand.prototype.connection_colors = [];
+        Hand.prototype.joint_colors=  [];
+        Hand.prototype.num_joints = 21;
+        var joints = [-67.4598,5.3851,584.7425,
+                -55.6470,8.8958,587.4889,
+                -35.5874,-54.6665,583.3420,
+                -54.7895,-53.8799,577.8048,
+                -71.0328,-51.3926,573.4493,
+                -88.8696,-46.2022,569.1099,
+                -32.8905,-20.8474,553.7415,
+                -18.7491,-39.3305,532.7702,
+                -19.8893,-56.4645,516.0034,
+                -35.5810,-69.2128,545.6373,
+                -35.5768,-78.8591,520.6336,
+                -35.2772,-75.8186,501.8809,
+                -52.5099,-66.7139,535.8283,
+                -51.0812,-74.7579,509.5187,
+                -51.7939,-78.6711,488.8988,
+                -72.3119,-85.2855,549.0604,
+                -73.1781,-108.2356,532.5458,
+                -69.9800,-125.8427,521.5565,
+                -101.7839,-74.5066,557.4333,
+                -110.1215,-92.7800,549.8948,
+                -117.0142,-109.9064,545.4029];
+        joints = reshape(joints);
+        var hand = Hand(joints);
+        normalize(hand);
+        flip_z(hand);
+        var  joints_relative = to_relative(joints,Hand.prototype.connections);
+        
+        init();
+        animate();
+        function init() {
+            camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 5000 );
+            camera.position.set( 0, 200, 400 );
+
+            scene = new THREE.Scene();
+            // scene.background = new THREE.Color( 0xeeeeee );
+
+            scene.add( new THREE.GridHelper( 400, 10 ) );
+            
+            add_hand(hand);
+            add_ground();
+            add_light();
+            console.log('scene:',scene);
+            //renderer
+            renderer = new THREE.WebGLRenderer( { antialias: true } );
+            renderer.setPixelRatio( window.devicePixelRatio );
+            renderer.setSize( window.innerWidth*0.75, window.innerHeight*0.75);
+            // renderer.setSize( 800, 800 );
+            document.body.appendChild( renderer.domElement );
+            
+            controls = new OrbitControls( camera, renderer.domElement );
+            controls.minDistance = 0;
+            controls.maxDistance = 700;
+            window.addEventListener( 'resize', onWindowResize, false );
+        }
+
+        function add_light(){
+            var hemiLight,hemiLightHelper;
+            hemiLight = new THREE.HemisphereLight( 0xddeeff, 0x0f0e0d, 0.5 );
+            hemiLight.position.set( 0, 100, 0 );
+            scene.add( hemiLight );
+
+            hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 10 );
+            scene.add( hemiLightHelper );
+        }
+
+        function add_ground(){
+            var floorMat = new THREE.MeshStandardMaterial( {
+					roughness: 0.8,
+					color: 0xffffff,
+					metalness: 0.2,
+					bumpScale: 0.0005
+				} );
+            var textureLoader = new THREE.TextureLoader();
+				textureLoader.load( "./three.js/examples/textures/hardwood2_diffuse.jpg", function ( map ) {
+
+					map.wrapS = THREE.RepeatWrapping;
+					map.wrapT = THREE.RepeatWrapping;
+					map.anisotropy = 4;
+					map.repeat.set( 10, 24 );
+					map.encoding = THREE.sRGBEncoding;
+					floorMat.map = map;
+					floorMat.needsUpdate = true;
+
+	        } );
+				textureLoader.load( "./three.js/examples/textures/hardwood2_bump.jpg", function ( map ) {
+
+					map.wrapS = THREE.RepeatWrapping;
+					map.wrapT = THREE.RepeatWrapping;
+					map.anisotropy = 4;
+					map.repeat.set( 10, 24 );
+					floorMat.bumpMap = map;
+					floorMat.needsUpdate = true;
+
+	        } );
+				textureLoader.load( "./three.js/examples/textures/hardwood2_roughness.jpg", function ( map ) {
+
+					map.wrapS = THREE.RepeatWrapping;
+					map.wrapT = THREE.RepeatWrapping;
+					map.anisotropy = 4;
+					map.repeat.set( 10, 24 );
+					floorMat.roughnessMap = map;
+					floorMat.needsUpdate = true;
+
+	        } );
+            var groundGeo = new THREE.PlaneBufferGeometry( 10000, 10000 );
+            // var groundMat = new THREE.MeshLambertMaterial( { color: 0xffffff } );
+            // groundMat.color.setHSL( 0.095, 1, 0.75 );
+            
+            var ground = new THREE.Mesh( groundGeo, floorMat );
+            ground.position.y = - 33;
+            ground.rotation.x = - Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add( ground );
+        }
+        function connection_to_tree(connections){
+            function finger(c,i){
+                if (i==c.length-1){
+                    return [c[i][1],[]];
+                }
+                return [c[i][1],[finger(c,i+1)]];
+            }
+            var root = [0,[]];
+            for(var i = 0; i < 5; i++){
+                var c = connections.slice(i*4,i*4+4);
+                root[1].push(finger(c,0));
+            }
+            return root;
+        }
+        function add_hand(hand){
+            var id_mesh_map = hand.getIdMap();
+            var id_grp_map = hand.getGrpMap();
+            function joint_mesh(joint){
+                var x = joint[0];
+                var y = joint[1];
+                var z = joint[2];
+                var geometry = new THREE.SphereBufferGeometry(5, 32, 32 );
+                var material = new THREE.MeshPhysicalMaterial( {
+                    emissive: 0x5edbed,
+                    emissiveIntensity: 1,
+                    color: 0x000000
+                } );
+                var bulbLight = new THREE.PointLight( 0x5edbed, 1, 100, 1 );
+                bulbLight.add( new THREE.Mesh( geometry, material ) );
+                bulbLight.position.set(x,y,z);
+                bulbLight.castShadow = true;
+                return bulbLight;
+            }
+            function connection_mesh(from,to){
+                var margin_rate = 0.7;
+                var u = new THREE.Vector3(...to).addScaledVector(new THREE.Vector3(...from),-1);
+                var sf = new THREE.Vector3(...from).addScaledVector(u,0.5);
+                var geometry = new THREE.CylinderBufferGeometry( 2, 5, u.length()*margin_rate, 30);
+                var material = new THREE.MeshStandardMaterial( {color: 0xe88742} );
+                var cylinder = new THREE.Mesh( geometry, material );
+                // cylinder.position.set(sf.x,sf.y,sf.z);
+                // cylinder.position.set([0,0,0]);
+                // cylinder.translate(sf.x,sf.y,sf.z);
+                cylinder.position.set(0, u.length()*0.5, 0);
+                var pivot = new THREE.Group();
+                pivot.position.set( 0.0, 0.0, 0 );
+                pivot.add( cylinder );
+
+                var quaternion = new THREE.Quaternion();
+                u = u.normalize();
+                quaternion.setFromUnitVectors(new THREE.Vector3( 0, 1, 0), u);
+                // cylinder.applyQuaternion(quaternion);
+                // return cylinder;
+                pivot.applyQuaternion(quaternion);
+                return pivot;
+            }
+            function add_successor(node,parent_grp){
+                if(node.length==0){
+                    return;
+                }
+                var joints = hand.getJoints();
+                var id = node[0];
+                console.log(joints_relative);
+                console.log(id);
+                var joint = joints_relative[id];
+                var x = joint[0];
+                var y = joint[1];
+                var z = joint[2];
+                // add mesh node[0]
+                var jm = joint_mesh([0,0,0]);
+                id_mesh_map[id] = jm;
+                // console.log('node',node);
+                // parent_grp.position.set(jm.position);
+                id_grp_map[id] = parent_grp;
+                parent_grp.position.set(x,y,z);
+                parent_grp.add(jm);
+                var from = joints[node[0]];
+                var child = node[1];
+                for(var i=0;i<child.length;i++){
+                    var to = joints[child[i][0]];
+                    var cm = connection_mesh(from,to);
+                    var sub_grp = new THREE.Group();
+                    if(i==0){
+                    }
+                    parent_grp.add(cm)
+                    parent_grp.add(sub_grp);
+                    add_successor(child[i],sub_grp);
+                }
+            }
+            var joints = hand.getJoints();
+            hand_mesh = new THREE.Group();
+            add_successor(Hand.prototype.structure,hand_mesh);
+            scene.add(hand_mesh);
+        }
+        function normalize(hand){
+            var origin_id =  0;
+            var joints = hand.getJoints();
+            var center = joints[origin_id].slice();
+            for ( var i = 0; i < Hand.prototype.num_joints; i ++ ) {
+                joints[i][0] -= center[0];
+                joints[i][1] -= center[1];
+                joints[i][2] -= center[2];
+            }
+        }
+        function reshape(array){
+            var tmp = [];
+            for( let i = 0; i < Hand.prototype.num_joints; i ++ ){
+                tmp.push(array.slice(i*3,i*3+3));
+            }
+            return tmp;
+        }
+        function to_relative(joints,connections){
+            var r = {0:[0,0,0]};
+            for (let i = 0; i < connections.length; i++) {
+                const connection = connections[i];
+                r[connection[1]] = [0,0,0]
+                for (let j = 0; j < joints[connection[0]].length; j++) {
+                    r[connection[1]][j] = joints[connection[1]][j]-joints[connection[0]][j];
+                }  
+            }
+            return r;
+        }
+
+        function flip_z(hand){
+            var joints = hand.getJoints();
+            for ( var i = 0; i < Hand.prototype.num_joints; i ++ ) {
+                joints[i][0]  *= 1;
+                joints[i][1]  *= -1;
+                joints[i][2]  *= 1;
+            }
+        }
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize( window.innerWidth, window.innerHeight );
+
+        }
+        function animate() {
+
+            requestAnimationFrame( animate );
+
+            var delta = clock.getDelta();
+            // hand_mesh.rotation.x += 0.005;
+            // hand_mesh.rotation.y += 0.05;
+            renderer.render( scene, camera );
+        }
+        function update_hand(){
+            var id_mesh_map = hand.getIdMap();
+            var id_grp_map = hand.getGrpMap();
+            function set_active(id){
+                var old = hand.getActivate();
+                id_mesh_map[old].children[0].material.emissive.setHex(0x5edbed);
+                id_mesh_map[old].color.setHex( 0x5edbed );
+                id_mesh_map[id].children[0].material.emissive.setHex(0xff0000);
+                id_mesh_map[id].color.setHex( 0xff0000 );
+                hand.setActivate(id);
+            }
+            function set_rotation_q(angle){
+                console.log(angle);
+                var activate = hand.getActivate();
+                var quaternion = new THREE.Quaternion();
+                quaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), angle);
+                id_grp_map[activate].setRotationFromQuaternion(quaternion);
+            }
+            function set_rotation(angle){
+                console.log(angle);
+                var activate = hand.getActivate();
+                id_grp_map[activate].rotation.y = angle;
+            }
+            var finger = document.getElementById('select_finger')
+            var index = document.getElementById('select_joint_idx')
+            var angle = document.getElementById('rotate_angle')
+            var strFinger = finger.options[finger.selectedIndex].text;
+            var valFinger = parseInt(finger.options[finger.selectedIndex].value);
+            var strIndex  = index.options[index.selectedIndex].text;
+            var valIndex  = parseInt(index.options[index.selectedIndex].value);
+            var valAngle  = parseInt(angle.value);
+            // document.getElementById('info').innerHTML =  strFinger+' '+ strIndex;
+            var joint_id = valIndex==0?0:(valIndex==1?1+valFinger:6+valFinger*3+valIndex-2);
+            // var joint_id = 1;
+            set_active(joint_id);
+            set_rotation(valAngle);
+        }
+        var finger_select = document.getElementById( 'select_finger' );
+        var joint_select = document.getElementById( 'select_joint_idx' );
+        var angle_slider = document.getElementById( 'rotate_angle' );
+		finger_select.addEventListener( 'change', update_hand);
+		joint_select.addEventListener( 'change', update_hand);
+		angle_slider.addEventListener( 'change', update_hand);
+    </script>
+</head>
+<body>
+    <style>
+        body {
+            background-color: #eee;
+            color: #444;
+        }
+        a {
+            color: #08f;
+        }
+        /* canvas {
+            position: absolute;
+            bottom: -80px;
+        } */
+    </style>
+<div id="container"></div>
+<div id="info"></div>
+<div id="controls">
+    <select id='select_finger'>
+        <option value="0">thumb</option>
+        <option value="1">index</option>
+        <option value="2">middle</option>
+        <option value="3">ring</option>
+        <option value="4">pinky</option>
+    </select>
+    <select id='select_joint_idx'>
+        <option value="0">1(靠近掌心开始)</option>
+        <option value="1">2</option>
+        <option value="2">3</option>
+        <option value="3">4</option>
+        <option value="4">5</option>
+    </select>
+</div>
+<div class="slider">
+    <input type="range" min="0" max="360" value="0" class="slider" id="rotate_angle">
+</div>
+</body>
+</html>
