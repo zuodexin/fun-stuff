@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cube</title>
+    <style>
+        .test_color {
+            color: #f7efd7;
+            color: #6495ed;
+            color: #4682b4;
+        }
+    </style>
+    <script src="./three.js/build/three.min.js"></script>
+    <script type="module">
+        import { OrbitControls } from './three.js/examples/jsm/controls/OrbitControls.js';
+		import { GUI } from './three.js/examples/jsm/libs/dat.gui.module.js';
+
+        var scene, renderer,controls,clock,grid_helper;
+		var view_param={
+            amount:7,
+            distance:1.5,
+            width:3,
+            height:3,
+            ground_vis:true
+        };
+        init();
+        animate();
+
+
+        function init() {
+            clock = new THREE.Clock();
+            set_scene();
+            add_ground();
+            add_light();
+            add_object();
+            
+            //renderer
+            set_renderer()
+            
+            // control
+            add_control()
+
+
+            window.addEventListener( 'resize', onWindowResize, false );
+        }
+        
+        
+
+        function set_renderer(){
+            renderer = new THREE.WebGLRenderer( { antialias: true,alpha: true } );
+            renderer.setPixelRatio( window.devicePixelRatio );
+            renderer.setSize( window.innerWidth, window.innerHeight);
+            document.body.appendChild( renderer.domElement );
+        }
+
+
+        function set_scene(){
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color( 0xf0f0f0 );
+        }
+
+
+        function get_camera(){
+            var ASPECT_RATIO = window.innerWidth / window.innerHeight;
+
+            var AMOUNT = view_param.amount;
+            var D = view_param.distance;
+            var W = view_param.width,H = view_param.height;
+
+            var dw = view_param.amount<=1?0:W/(view_param.amount-1),dh = view_param.amount<=1?0:H/(view_param.amount-1);
+            var WIDTH = ( window.innerWidth / view_param.amount ) * window.devicePixelRatio;
+            var HEIGHT = ( window.innerHeight / view_param.amount ) * window.devicePixelRatio;
+
+            var cameras = [];
+            for ( var y = 0; y < view_param.amount; y ++ ) {
+                for ( var x = 0; x < view_param.amount; x ++ ) {
+                    var w = (x-Math.floor(view_param.amount/2))*dw;
+                    var h = (y-Math.floor(view_param.amount/2))*dh;
+                    var subcamera = new THREE.PerspectiveCamera( 40, ASPECT_RATIO, 0.1, 10 );
+                    subcamera.viewport = new THREE.Vector4( Math.floor( x * WIDTH ), Math.floor( y * HEIGHT ), Math.ceil( WIDTH ), Math.ceil( HEIGHT ) );
+                    subcamera.position.x = w;
+                    subcamera.position.y = h;
+                    subcamera.position.z = D;
+
+                    subcamera.position.multiplyScalar( 2 );
+                    subcamera.lookAt( 0, 0, 0 );
+                    subcamera.updateMatrixWorld();
+                    cameras.push( subcamera );
+
+                }
+
+            }
+            var camera = new THREE.ArrayCamera( cameras );
+            camera.position.z = 3;
+            return camera
+        }
+
+
+        function add_light(){
+            var hemiLight,hemiLightHelper;
+            var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff);
+            hemiLight.position.set( 0, 20, 0 );
+            scene.add( hemiLight );
+
+            var dirLight = new THREE.DirectionalLight( 0xffffff );
+            dirLight.position.set( - 3, 10, - 10 );
+            dirLight.castShadow = true;
+            dirLight.shadow.camera.top = 2;
+            dirLight.shadow.camera.bottom = - 2;
+            dirLight.shadow.camera.left = - 2;
+            dirLight.shadow.camera.right = 2;
+            dirLight.shadow.camera.near = 0.1;
+            dirLight.shadow.camera.far = 40;
+            scene.add( dirLight );
+        }
+
+
+        function add_ground(){
+            grid_helper = new THREE.GridHelper( 100, 100 ) 
+            scene.add( grid_helper );
+            grid_helper.position.y = -0.5;
+        }
+
+
+        function add_object(){
+            
+            var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+            var material = new THREE.MeshLambertMaterial( { color:0x4682b4} )
+            var object = new THREE.Mesh( geometry, material )
+
+            var geo = new THREE.EdgesGeometry( object.geometry );
+            var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: 1 } );
+            var wireframe = new THREE.LineSegments( geo, mat );
+            wireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
+            object.add( wireframe );
+
+            object.position.x = 0;
+            object.position.y = 0;
+            object.position.z = 0;
+            scene.add( object );
+        }
+
+
+        function add_control(){
+            var gui = new GUI();
+            gui.add(view_param, "amount", 1, 9).step(1).onChange( function ( value ){
+                renderer.render( scene, get_camera() );
+            });
+            gui.add(view_param,"distance",1,2).onChange( function ( value ){
+                renderer.render( scene, get_camera() );
+            });
+            gui.add(view_param,"width",1,3).onChange( function ( value ){
+                renderer.render( scene, get_camera() );
+            });
+            gui.add(view_param,"height",1,3).onChange( function ( value ){
+                renderer.render( scene, get_camera() );
+            });
+            gui.add(view_param,"ground_vis",1,3).onChange( function ( value ){
+                grid_helper.visible = value;
+                renderer.render( scene, get_camera() );
+            });
+        }
+
+
+        function animate() {
+            // requestAnimationFrame( animate );
+            var delta = clock.getDelta();
+            renderer.render( scene, get_camera() );
+        }
+
+
+        //事件处理
+        function onWindowResize() {
+            var camera = get_camera();
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setPixelRatio( window.devicePixelRatio );
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            requestAnimationFrame( animate );
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>
